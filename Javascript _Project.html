@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspirational Quote Generator</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-hover: #3a5a80;
+            --bulb-size: 40px;
+            --transition-speed: 0.4s;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            transition: background var(--transition-speed) ease;
+        }
+        
+        .quote-container {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            margin: 2rem;
+            perspective: 1000px;
+        }
+        
+        .quote-box {
+            background: white;
+            padding: 3rem 2rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quote-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: var(--current-color, var(--primary-color));
+            transition: background var(--transition-speed) ease;
+        }
+        
+        .quote-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .quote-text {
+            font-size: 1.6rem;
+            line-height: 1.4;
+            color: #333;
+            margin: 0 0 1.5rem;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            transition: opacity 0.3s ease;
+        }
+        
+        .quote-author {
+            font-style: italic;
+            color: #666;
+            text-align: right;
+            margin-bottom: 2rem;
+            transition: opacity 0.3s ease;
+        }
+        
+        .btn-new-quote {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-new-quote:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Bulb Styles */
+        .corner-bulb {
+            width: var(--bulb-size);
+            height: var(--bulb-size);
+            border-radius: 50%;
+            background: #f0f0f0;
+            position: absolute;
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+        
+        .corner-bulb::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(var(--bulb-size) * 0.6);
+            height: 12px;
+            background: #ddd;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .corner-bulb.active {
+            background: #FFD700;
+            box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.7);
+        }
+        
+        .bulb-left {
+            top: calc(var(--bulb-size) * -0.5);
+            left: calc(var(--bulb-size) * -0.5);
+        }
+        
+        .bulb-right {
+            top: calc(var(--bulb-size) * -0.5);
+            right: calc(var(--bulb-size) * -0.5);
+        }
+        
+        /* Animation Classes */
+        .fade-out {
+            opacity: 0;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .quote-text {
+                font-size: 1.3rem;
+                min-height: 100px;
+            }
+            
+            :root {
+                --bulb-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quote-container">
+        <!-- Decorative Corner Bulbs -->
+        <div class="corner-bulb bulb-left"></div>
+        <div class="corner-bulb bulb-right"></div>
+        
+        <div class="quote-box">
+            <div class="quote-content">
+                <p class="quote-text" id="quote">Click the button below for an inspirational quote</p>
+                <p class="quote-author" id="author"></p>
+                <button class="btn-new-quote" id="new-quote">Generate Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quote database with associated colors
+        const quotes = [
+            { 
+                text: "The only way to do great work is to love what you do.", 
+                author: "Steve Jobs",
+                color: "#4285F4",
+                bulbColor: "#FFD700"
+            },
+            { 
+                text: "Life is what happens when you're busy making other plans.", 
+                author: "John Lennon",
+                color: "#EA4335",
+                bulbColor: "#FF7F50"
+            },
+            { 
+                text: "Strive not to be a success, but rather to be of value.", 
+                author: "Albert Einstein",
+                color: "#FBBC05",
+                bulbColor: "#9370DB"
+            },
+            { 
+                text: "You miss 100% of the shots you don't take.", 
+                author: "Wayne Gretzky",
+                color: "#34A853",
+                bulbColor: "#40E0D0"
+            },
+            { 
+                text: "The best revenge is massive success.", 
+                author: "Frank Sinatra",
+                color: "#673AB7",
+                bulbColor: "#FF69B4"
+            }
+        ];
+        
+        // DOM Elements
+        const quoteElement = document.getElementById('quote');
+        const authorElement = document.getElementById('author');
+        const newQuoteBtn = document.getElementById('new-quote');
+        const quoteBox = document.querySelector('.quote-box');
+        const bulbLeft = document.querySelector('.bulb-left');
+        const bulbRight = document.querySelector('.bulb-right');
+        const body = document.body;
+        
+        // Animation variables
+        let currentQuoteIndex = 0;
+        let isAnimating = false;
+        let bulbInterval;
+        
+        // Initialize
+        displayQuote(getRandomQuoteIndex());
+        
+        // Event Listeners
+        newQuoteBtn.addEventListener('click', () => {
+            if (!isAnimating) {
+                const newIndex = getRandomQuoteIndex();
+                animateQuoteChange(newIndex);
+            }
+        });
+        
+        // Functions
+        function getRandomQuoteIndex() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * quotes.length);
+            } while (quotes.length > 1 && newIndex === currentQuoteIndex);
+            return newIndex;
+        }
+        
+        function displayQuote(index) {
+            const quote = quotes[index];
+            currentQuoteIndex = index;
+            
+            quoteElement.textContent = quote.text;
+            authorElement.textContent = `— ${quote.author}`;
+            
+            // Update colors
+            document.documentElement.style.setProperty('--current-color', quote.color);
+            body.style.background = `linear-gradient(135deg, ${quote.color}20 0%, #e4e8ed 100%)`;
+        }
+        
+        function animateQuoteChange(newIndex) {
+            isAnimating = true;
+            
+            // Fade out current quote
+            quoteElement.classList.add('fade-out');
+            authorElement.classList.add('fade-out');
+            
+            // Activate bulbs with random blinking
+            activateBulbs();
+            
+            // After fade out completes
+            setTimeout(() => {
+                // Display new quote
+                displayQuote(newIndex);
+                
+                // Fade in new quote
+                quoteElement.classList.remove('fade-out');
+                authorElement.classList.remove('fade-out');
+                quoteElement.classList.add('fade-in');
+                authorElement.classList.add('fade-in');
+                
+                // Remove fade-in class after animation completes
+                setTimeout(() => {
+                    quoteElement.classList.remove('fade-in');
+                    authorElement.classList.remove('fade-in');
+                    isAnimating = false;
+                }, 600);
+                
+            }, 300);
+        }
+        
+        function activateBulbs() {
+            // Clear any existing interval
+            clearInterval(bulbInterval);
+            
+            // Turn on bulbs
+            bulbLeft.classList.add('active');
+            bulbRight.classList.add('active');
+            
+            // Random blinking pattern
+            bulbInterval = setInterval(() => {
+                // Random duration between 200-800ms
+                const duration = Math.random() * 600 + 200;
+                
+                // Toggle bulbs independently
+                setTimeout(() => {
+                    bulbLeft.classList.toggle('active');
+                }, Math.random() * 200);
+                
+                setTimeout(() => {
+                    bulbRight.classList.toggle('active');
+                }, Math.random() * 200);
+                
+            }, 800);
+            
+            // Stop blinking after 3 seconds
+            setTimeout(() => {
+                clearInterval(bulbInterval);
+                bulbLeft.classList.remove('active');
+                bulbRight.classList.remove('active');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
