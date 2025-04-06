@@ -97,7 +97,6 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
         
-        /* Bulb Styles */
         .corner-bulb {
             width: var(--bulb-size);
             height: var(--bulb-size);
@@ -135,7 +134,6 @@
             right: calc(var(--bulb-size) * -0.5);
         }
         
-        /* Animation Classes */
         .fade-out {
             opacity: 0;
         }
@@ -149,7 +147,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Responsive Adjustments */
         @media (max-width: 600px) {
             .quote-text {
                 font-size: 1.3rem;
@@ -164,7 +161,7 @@
 </head>
 <body>
     <div class="quote-container">
-        <!-- Decorative Corner Bulbs -->
+        
         <div class="corner-bulb bulb-left"></div>
         <div class="corner-bulb bulb-right"></div>
         
@@ -178,7 +175,7 @@
     </div>
 
     <script>
-        // Quote database with associated colors
+       
         const quotes = [
             { 
                 text: "The only way to do great work is to love what you do.", 
@@ -212,7 +209,7 @@
             }
         ];
         
-        // DOM Elements
+        
         const quoteElement = document.getElementById('quote');
         const authorElement = document.getElementById('author');
         const newQuoteBtn = document.getElementById('new-quote');
@@ -221,15 +218,12 @@
         const bulbRight = document.querySelector('.bulb-right');
         const body = document.body;
         
-        // Animation variables
         let currentQuoteIndex = 0;
         let isAnimating = false;
         let bulbInterval;
         
-        // Initialize
         displayQuote(getRandomQuoteIndex());
         
-        // Event Listeners
         newQuoteBtn.addEventListener('click', () => {
             if (!isAnimating) {
                 const newIndex = getRandomQuoteIndex();
@@ -237,7 +231,6 @@
             }
         });
         
-        // Functions
         function getRandomQuoteIndex() {
             let newIndex;
             do {
@@ -253,7 +246,6 @@
             quoteElement.textContent = quote.text;
             authorElement.textContent = `— ${quote.author}`;
             
-            // Update colors
             document.documentElement.style.setProperty('--current-color', quote.color);
             body.style.background = `linear-gradient(135deg, ${quote.color}20 0%, #e4e8ed 100%)`;
         }
@@ -261,25 +253,20 @@
         function animateQuoteChange(newIndex) {
             isAnimating = true;
             
-            // Fade out current quote
             quoteElement.classList.add('fade-out');
             authorElement.classList.add('fade-out');
             
-            // Activate bulbs with random blinking
             activateBulbs();
             
-            // After fade out completes
             setTimeout(() => {
-                // Display new quote
+
                 displayQuote(newIndex);
                 
-                // Fade in new quote
                 quoteElement.classList.remove('fade-out');
                 authorElement.classList.remove('fade-out');
                 quoteElement.classList.add('fade-in');
                 authorElement.classList.add('fade-in');
                 
-                // Remove fade-in class after animation completes
                 setTimeout(() => {
                     quoteElement.classList.remove('fade-in');
                     authorElement.classList.remove('fade-in');
@@ -290,19 +277,16 @@
         }
         
         function activateBulbs() {
-            // Clear any existing interval
+
             clearInterval(bulbInterval);
             
-            // Turn on bulbs
             bulbLeft.classList.add('active');
             bulbRight.classList.add('active');
             
-            // Random blinking pattern
             bulbInterval = setInterval(() => {
-                // Random duration between 200-800ms
+
                 const duration = Math.random() * 600 + 200;
                 
-                // Toggle bulbs independently
                 setTimeout(() => {
                     bulbLeft.classList.toggle('active');
                 }, Math.random() * 200);
@@ -313,7 +297,6 @@
                 
             }, 800);
             
-            // Stop blinking after 3 seconds
             setTimeout(() => {
                 clearInterval(bulbInterval);
                 bulbLeft.classList.remove('active');
